@@ -1,6 +1,2 @@
-from typing import Literal
-
-
-def handler_literal(origin, args, value):
-    if origin is Literal:
-        return value in args
+def handler_literal(args, value, _):
+    return value in args

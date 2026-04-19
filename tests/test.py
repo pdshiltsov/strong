@@ -1,6 +1,6 @@
 from typing import Literal
 
-from strong.strong import strong
+from strong import strong
 
 
 def run_test(name, func, *args, should_raise=False):

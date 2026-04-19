@@ -1,7 +1,7 @@
 import inspect
 from functools import wraps
 
-from .type_checker import _type_checker
+from strong.type_checker import _type_checker
 
 
 def strong(func):
