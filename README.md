@@ -36,7 +36,7 @@ uv add strongpy
 # 🧪 Usage
 
 ```python
-from strongpy import strong
+from strong import strong
 
 @strong
 def add(x: int, y: int) -> int:
