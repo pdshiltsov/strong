@@ -1,4 +1,4 @@
-# ⚡ Strong
+# ⚡ weak
 
 A lightweight runtime type checker for Python functions.
 
@@ -23,12 +23,12 @@ It validates function arguments and return values using type annotations.
 # 📦 Installation
 
 ```bash
-pip install strong
+pip install weak
 ```
 or (using uv)
 
 ```bash
-uv add strong
+uv add weak
 ```
 
 ---
@@ -36,7 +36,7 @@ uv add strong
 # 🧪 Usage
 
 ```python
-from strong import strong
+from weak import strong
 
 @strong
 def add(x: int, y: int) -> int:
