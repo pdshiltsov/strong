@@ -1,11 +1,15 @@
 from typing import get_args, get_origin
 
 from strong.handlers import HANDLERS
+from functools import lru_cache
 
+
+@lru_cache(None)
+def analyze_type(tp):
+    return get_origin(tp), get_args(tp)
 
 def _type_checker(value, expected):
-    origin = get_origin(expected)
-    args = get_args(expected)
+    origin, args = analyze_type(expected)
 
     if origin is None:
         return isinstance(value, expected)
