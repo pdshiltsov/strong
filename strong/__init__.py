@@ -1,0 +1,1 @@
+from .strong import strong
