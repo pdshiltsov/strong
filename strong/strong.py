@@ -4,11 +4,25 @@ from functools import wraps
 from strong.type_checker import _type_checker
 
 
+def _name(tp):
+    return getattr(tp, "__name__", str(tp))
+
 def strong(func):
+    """
+    Runtime type checking decorator.
+
+    Validates function arguments and return value using type annotations.
+
+    Example:
+        @strong
+        def add(x: int, y: int) -> int:
+            return x + y
+    """
+    
     sig = inspect.signature(func)
     return_type = sig.return_annotation
     func_name = func.__name__
-    ret_name = return_type.__name__
+    ret_name = _name(return_type)
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -22,7 +36,7 @@ def strong(func):
                 continue
 
             if not _type_checker(value, expected):
-                exp_name = expected.__name__
+                exp_name = _name(expected)
                 val_name = type(value).__name__
 
                 raise TypeError(

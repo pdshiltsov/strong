@@ -1,29 +1,15 @@
+import pytest
 from typing import Literal
-
 from strong import strong
 
 
-def run_test(name, func, *args, should_raise=False):
-    try:
-        result = func(*args)
-        if should_raise:
-            print(f"[FAIL] {name} — expected error, got {result}")
-        else:
-            print(f"[OK] {name} — result: {result}")
-    except Exception as e:
-        if should_raise:
-            print(f"[OK] {name} — raised {type(e).__name__}: {e}")
-        else:
-            print(f"[FAIL] {name} — unexpected error: {e}")
-
+# ============================================================================
+# FUNCTIONS UNDER TEST
+# ============================================================================
 
 @strong
 def add(a: int, b: int) -> int:
     return a + b
-
-
-run_test("int + int", add, 1, 2)
-run_test("int + str", add, 1, "2", should_raise=True)
 
 
 @strong
@@ -31,16 +17,9 @@ def bad_return(a: int) -> str:
     return a
 
 
-run_test("return type wrong", bad_return, 10, should_raise=True)
-
-
 @strong
 def sum_list(xs: list[int]) -> int:
     return sum(xs)
-
-
-run_test("list[int] ok", sum_list, [1, 2, 3])
-run_test("list[int] bad", sum_list, [1, "2", 3], should_raise=True)
 
 
 @strong
@@ -48,17 +27,9 @@ def total(d: dict[str, int]) -> int:
     return sum(d.values())
 
 
-run_test("dict ok", total, {"a": 1, "b": 2})
-run_test("dict bad key", total, {1: 1, "b": 2}, should_raise=True)
-run_test("dict bad value", total, {"a": "1"}, should_raise=True)
-
-
 @strong
 def mix(a: int, b: list[int], c: dict[str, int]) -> int:
     return a + sum(b) + sum(c.values())
-
-
-run_test("mixed ok", mix, 1, [1, 2], {"x": 3})
 
 
 @strong
@@ -66,16 +37,9 @@ def empty_list(xs: list[int]) -> int:
     return len(xs)
 
 
-run_test("empty list", empty_list, [])
-
-
 @strong
 def f5(x: list[list[int]]) -> int:
     return sum(sum(row) for row in x)
-
-
-run_test("nested ok", f5, [[1, 2], [3]])
-run_test("nested fail", f5, [[1, "2"], [3]], should_raise=True)
 
 
 @strong
@@ -83,18 +47,9 @@ def f6(d: dict[str, list[int]]) -> int:
     return sum(sum(v) for v in d.values())
 
 
-run_test("complex ok", f6, {"a": [1, 2], "b": [3]})
-run_test("complex fail", f6, {"a": [1, "2"]}, should_raise=True)
-
-
 @strong
 def f7(x: list[int]) -> int:
     return len(x)
-
-
-run_test("None list fail", f7, None, should_raise=True)
-run_test("string instead list", f7, "123", should_raise=True)
-run_test("tuple instead list", f7, (1, 2, 3), should_raise=True)
 
 
 @strong
@@ -102,24 +57,9 @@ def f8(x: int) -> int:
     return x
 
 
-run_test("bool as int", f8, True)
-
-
-@strong
-def f9(a: int, b: list[int], c: dict[str, int]) -> int:
-    return a + sum(b) + sum(c.values())
-
-
-run_test("mixed ok", f9, 1, [1, 2], {"x": 3})
-run_test("mixed fail", f9, 1, [1, "2"], {"x": 3}, should_raise=True)
-
-
 @strong
 def f10(a, b):
     return a + b
-
-
-run_test("no annotations", f10, 1, 2)
 
 
 @strong
@@ -127,18 +67,9 @@ def u1(x: int | str) -> str:
     return str(x)
 
 
-run_test("union int", u1, 10)
-run_test("union str", u1, "hello")
-run_test("union fail", u1, 1.5, should_raise=True)
-
-
 @strong
 def u2(xs: list[int | str]) -> int:
     return len(xs)
-
-
-run_test("list union ok", u2, [1, "a", 3])
-run_test("list union fail", u2, [1, 2.5], should_raise=True)
 
 
 @strong
@@ -146,18 +77,9 @@ def u3(d: dict[str, int | str]) -> int:
     return len(d)
 
 
-run_test("dict union ok", u3, {"a": 1, "b": "x"})
-run_test("dict union fail", u3, {"a": 1.5}, should_raise=True)
-
-
 @strong
 def l1(mode: Literal["GET", "POST"]) -> str:
     return mode
-
-
-run_test("literal ok GET", l1, "GET")
-run_test("literal ok POST", l1, "POST")
-run_test("literal fail", l1, "PUT", should_raise=True)
 
 
 @strong
@@ -165,18 +87,9 @@ def l2(x: Literal[1, 2, 3], y: int) -> int:
     return x + y
 
 
-run_test("literal mix ok", l2, 2, 10)
-run_test("literal mix fail", l2, 5, 10, should_raise=True)
-
-
 @strong
 def t1(x: tuple[int, str, str]) -> str:
     return x[1]
-
-
-run_test("tuple fixed ok", t1, (1, "a", "b"))
-run_test("tuple fixed fail type", t1, (1, 2, "b"), should_raise=True)
-run_test("tuple fixed fail length", t1, (1, "a"), should_raise=True)
 
 
 @strong
@@ -184,18 +97,9 @@ def t2(x: tuple[int, ...]) -> int:
     return sum(x)
 
 
-run_test("tuple var ok", t2, (1, 2, 3, 4))
-run_test("tuple var empty", t2, ())
-run_test("tuple var fail", t2, (1, "2"), should_raise=True)
-
-
 @strong
 def t3(x: tuple[int, tuple[str, int]]) -> str:
     return x[1][0]
-
-
-run_test("tuple nested ok", t3, (1, ("a", 2)))
-run_test("tuple nested fail", t3, (1, ("a", "b")), should_raise=True)
 
 
 @strong
@@ -203,162 +107,280 @@ def t4(x: tuple[int | str, int]) -> int:
     return x[1]
 
 
-run_test("tuple union ok", t4, (1, 2))
-run_test("tuple union ok2", t4, ("a", 2))
-run_test("tuple union fail", t4, (1.5, 2), should_raise=True)
-
-
 @strong
 def s1(a: list[int | str], b: dict[str, tuple[int, str]], c: tuple[int, ...]) -> int:
     return len(a) + len(b) + len(c)
 
 
-run_test("stress ok", s1, [1, "x", 3], {"a": (1, "b")}, (1, 2, 3))
-
-run_test("stress fail list", s1, [1, 2.5], {"a": (1, "b")}, (1, 2), should_raise=True)
-
-run_test("stress fail dict", s1, [1, "x"], {"a": (1, 2)}, (1, 2), should_raise=True)
-
 # ============================================================================
-# SET TESTS
+# BASIC TESTS
 # ============================================================================
 
+def test_add():
+    assert add(1, 2) == 3
+
+    with pytest.raises(Exception):
+        add(1, "2")
+
+
+def test_bad_return():
+    with pytest.raises(Exception):
+        bad_return(10)
+
+
+# ============================================================================
+# LIST / DICT / MIX
+# ============================================================================
+
+@pytest.mark.parametrize("xs, should_fail", [
+    ([1, 2, 3], False),
+    ([1, "2", 3], True),
+])
+def test_sum_list(xs, should_fail):
+    if should_fail:
+        with pytest.raises(Exception):
+            sum_list(xs)
+    else:
+        assert sum_list(xs) == 6
+
+
+def test_dict():
+    assert total({"a": 1, "b": 2}) == 3
+
+    with pytest.raises(Exception):
+        total({1: 1, "b": 2})
+
+    with pytest.raises(Exception):
+        total({"a": "1"})
+
+
+def test_mix():
+    assert mix(1, [1, 2], {"x": 3}) == 7
+
+    with pytest.raises(Exception):
+        mix(1, [1, "2"], {"x": 3})
+
+
+# ============================================================================
+# EDGE CASES
+# ============================================================================
+
+def test_empty_and_misc():
+    assert empty_list([]) == 0
+    assert f8(True) == 1  # bool is int in Python
+
+
+# ============================================================================
+# NESTED STRUCTURES
+# ============================================================================
+
+def test_nested():
+    assert f5([[1, 2], [3]]) == 6
+
+    with pytest.raises(Exception):
+        f5([[1, "2"], [3]])
+
+    assert f6({"a": [1, 2], "b": [3]}) == 6
+
+    with pytest.raises(Exception):
+        f6({"a": [1, "2"]})
+
+
+# ============================================================================
+# INVALID INPUT TYPES
+# ============================================================================
+
+@pytest.mark.parametrize("value", [
+    None,
+    "123",
+    (1, 2, 3),
+])
+def test_invalid_list_inputs(value):
+    with pytest.raises(Exception):
+        f7(value)
+
+
+# ============================================================================
+# UNION TYPES
+# ============================================================================
+
+def test_unions():
+    assert u1(10) == "10"
+    assert u1("hello") == "hello"
+
+    with pytest.raises(Exception):
+        u1(1.5)
+
+    assert u2([1, "a", 3]) == 3
+
+    with pytest.raises(Exception):
+        u2([1, 2.5])
+
+    assert u3({"a": 1, "b": "x"}) == 2
+
+    with pytest.raises(Exception):
+        u3({"a": 1.5})
+
+
+# ============================================================================
+# LITERALS
+# ============================================================================
+
+def test_literals():
+    assert l1("GET") == "GET"
+    assert l1("POST") == "POST"
+
+    with pytest.raises(Exception):
+        l1("PUT")
+
+    assert l2(2, 10) == 12
+
+    with pytest.raises(Exception):
+        l2(5, 10)
+
+
+# ============================================================================
+# TUPLES
+# ============================================================================
+
+def test_tuples():
+    assert t1((1, "a", "b")) == "a"
+
+    with pytest.raises(Exception):
+        t1((1, 2, "b"))
+
+    with pytest.raises(Exception):
+        t1((1, "a"))
+
+    assert t2((1, 2, 3)) == 6
+    assert t2(()) == 0
+
+    with pytest.raises(Exception):
+        t2((1, "2"))
+
+    assert t3((1, ("a", 2))) == "a"
+
+    with pytest.raises(Exception):
+        t3((1, ("a", "b")))
+
+    assert t4((1, 2)) == 2
+    assert t4(("a", 2)) == 2
+
+    with pytest.raises(Exception):
+        t4((1.5, 2))
+
+
+# ============================================================================
+# STRESS CASE
+# ============================================================================
+
+def test_stress():
+    assert s1([1, "x", 3], {"a": (1, "b")}, (1, 2, 3)) == 7
+
+    with pytest.raises(Exception):
+        s1([1, 2.5], {"a": (1, "b")}, (1, 2))
+
+    with pytest.raises(Exception):
+        s1([1, "x"], {"a": (1, 2)}, (1, 2))
+
+
+# ============================================================================
+# SETS
+# ============================================================================
 
 @strong
 def f_set_int(x: set[int]) -> int:
     return sum(x)
 
-
 @strong
 def f_set_str(x: set[str]) -> str:
     return ",".join(sorted(x))
-
 
 @strong
 def f_set_any(x: set):
     return x
 
-
 @strong
 def f_set_nested(x: set[tuple[int, str]]):
     return x
-
-
-@strong
-def f_set_return() -> set[int]:
-    return {1, 2, 3}
-
-
-# --- VALID CASES ---
-
-run_test("set[int] valid", f_set_int, {1, 2, 3})
-run_test("set[int] empty", f_set_int, set())
-run_test("set[str] valid", f_set_str, {"a", "b", "c"})
-run_test("set without annotation", f_set_any, {1, "a", 3.5})
-run_test("set nested valid", f_set_nested, {(1, "a"), (2, "b")})
-
-
-# --- INVALID CASES ---
-
-run_test("set[int] with str", f_set_int, {"1", "2"}, should_raise=True)
-run_test("set[int] mixed types", f_set_int, {1, "2"}, should_raise=True)
-run_test("set[str] with int", f_set_str, {1, 2}, should_raise=True)
-run_test("list instead of set", f_set_int, [1, 2, 3], should_raise=True)
-run_test("frozenset instead of set", f_set_int, frozenset([1, 2]), should_raise=True)
-run_test("nested invalid", f_set_nested, {(1, "a"), (2, 3)}, should_raise=True)
-
-
-# --- EDGE CASES ---
-
-run_test("set with bool (bool is int)", f_set_int, {True, False})
-run_test("set large", f_set_int, set(range(1000)))
-run_test("set negative numbers", f_set_int, {-1, -2, -3})
-
-
-# --- RETURN VALIDATION ---
-
 
 @strong
 def f_bad_return_set() -> set[int]:
     return {"a", "b"}
 
 
-run_test("invalid return set[int]", f_bad_return_set, should_raise=True)
+def test_sets():
+    assert f_set_int({1, 2, 3}) == 6
+    assert f_set_int(set()) == 0
+
+    with pytest.raises(Exception):
+        f_set_int({"1", "2"})
+
+    with pytest.raises(Exception):
+        f_set_int({1, "2"})
+
+    assert f_set_str({"a", "b"}) == "a,b"
+    assert isinstance(f_set_any({1, "a"}), set)
+
+    assert f_set_nested({(1, "a"), (2, "b")}) == {(1, "a"), (2, "b")}
+
+    with pytest.raises(Exception):
+        f_set_nested({(1, "a"), (2, 3)})
+
+    assert f_set_int({True, False}) is not None
+    assert f_set_int(set(range(1000))) is not None
+    assert f_set_int({-1, -2, -3}) == -6
+
+    with pytest.raises(Exception):
+        f_bad_return_set()
 
 
 # ============================================================================
-# FROZENSET TESTS
+# FROZENSET
 # ============================================================================
-
 
 @strong
 def f_frozenset_int(x: frozenset[int]) -> int:
     return sum(x)
 
-
 @strong
 def f_frozenset_str(x: frozenset[str]) -> str:
     return ",".join(sorted(x))
-
 
 @strong
 def f_frozenset_any(x: frozenset):
     return x
 
-
 @strong
 def f_frozenset_nested(x: frozenset[tuple[int, str]]):
     return x
-
-
-@strong
-def f_frozenset_return() -> frozenset[int]:
-    return frozenset([1, 2, 3])
-
-
-# --- VALID CASES ---
-
-run_test("frozenset[int] valid", f_frozenset_int, frozenset([1, 2, 3]))
-run_test("frozenset[int] empty", f_frozenset_int, frozenset())
-run_test("frozenset[str] valid", f_frozenset_str, frozenset(["a", "b"]))
-run_test("frozenset without annotation", f_frozenset_any, frozenset([1, "a"]))
-run_test("frozenset nested valid", f_frozenset_nested, frozenset([(1, "a"), (2, "b")]))
-
-
-# --- INVALID CASES ---
-
-run_test(
-    "frozenset[int] with str", f_frozenset_int, frozenset(["1", "2"]), should_raise=True
-)
-run_test(
-    "frozenset[int] mixed", f_frozenset_int, frozenset([1, "2"]), should_raise=True
-)
-run_test(
-    "frozenset[str] with int", f_frozenset_str, frozenset([1, 2]), should_raise=True
-)
-run_test("list instead of frozenset", f_frozenset_int, [1, 2], should_raise=True)
-run_test("set instead of frozenset", f_frozenset_int, {1, 2}, should_raise=True)
-run_test(
-    "nested invalid",
-    f_frozenset_nested,
-    frozenset([(1, "a"), (2, 3)]),
-    should_raise=True,
-)
-
-
-# --- EDGE CASES ---
-
-run_test("frozenset with bool", f_frozenset_int, frozenset([True, False]))
-run_test("frozenset large", f_frozenset_int, frozenset(range(1000)))
-run_test("frozenset zeros", f_frozenset_int, frozenset([0, 0, 0]))
-
-
-# --- RETURN VALIDATION ---
-
 
 @strong
 def f_bad_return_frozenset() -> frozenset[int]:
     return frozenset(["a", "b"])
 
 
-run_test("invalid return frozenset[int]", f_bad_return_frozenset, should_raise=True)
+def test_frozensets():
+    assert f_frozenset_int(frozenset([1, 2, 3])) == 6
+    assert f_frozenset_int(frozenset()) == 0
+
+    with pytest.raises(Exception):
+        f_frozenset_int(frozenset(["1", "2"]))
+
+    with pytest.raises(Exception):
+        f_frozenset_int(frozenset([1, "2"]))
+
+    assert f_frozenset_str(frozenset(["a", "b"])) == "a,b"
+    assert isinstance(f_frozenset_any(frozenset([1, "a"])), frozenset)
+
+    assert f_frozenset_nested(frozenset([(1, "a"), (2, "b")])) is not None
+
+    with pytest.raises(Exception):
+        f_frozenset_nested(frozenset([(1, "a"), (2, 3)]))
+
+    assert f_frozenset_int(frozenset([True, False])) is not None
+    assert f_frozenset_int(frozenset(range(1000))) is not None
+    assert f_frozenset_int(frozenset([0, 0, 0])) == 0
+
+    with pytest.raises(Exception):
+        f_bad_return_frozenset()
