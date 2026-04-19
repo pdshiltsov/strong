@@ -223,21 +223,26 @@ run_test("stress fail dict", s1, [1, "x"], {"a": (1, 2)}, (1, 2), should_raise=T
 # SET TESTS
 # ============================================================================
 
+
 @strong
 def f_set_int(x: set[int]) -> int:
     return sum(x)
+
 
 @strong
 def f_set_str(x: set[str]) -> str:
     return ",".join(sorted(x))
 
+
 @strong
 def f_set_any(x: set):
     return x
 
+
 @strong
 def f_set_nested(x: set[tuple[int, str]]):
     return x
+
 
 @strong
 def f_set_return() -> set[int]:
@@ -272,9 +277,11 @@ run_test("set negative numbers", f_set_int, {-1, -2, -3})
 
 # --- RETURN VALIDATION ---
 
+
 @strong
 def f_bad_return_set() -> set[int]:
     return {"a", "b"}
+
 
 run_test("invalid return set[int]", f_bad_return_set, should_raise=True)
 
@@ -283,21 +290,26 @@ run_test("invalid return set[int]", f_bad_return_set, should_raise=True)
 # FROZENSET TESTS
 # ============================================================================
 
+
 @strong
 def f_frozenset_int(x: frozenset[int]) -> int:
     return sum(x)
+
 
 @strong
 def f_frozenset_str(x: frozenset[str]) -> str:
     return ",".join(sorted(x))
 
+
 @strong
 def f_frozenset_any(x: frozenset):
     return x
 
+
 @strong
 def f_frozenset_nested(x: frozenset[tuple[int, str]]):
     return x
+
 
 @strong
 def f_frozenset_return() -> frozenset[int]:
@@ -315,12 +327,23 @@ run_test("frozenset nested valid", f_frozenset_nested, frozenset([(1, "a"), (2, 
 
 # --- INVALID CASES ---
 
-run_test("frozenset[int] with str", f_frozenset_int, frozenset(["1", "2"]), should_raise=True)
-run_test("frozenset[int] mixed", f_frozenset_int, frozenset([1, "2"]), should_raise=True)
-run_test("frozenset[str] with int", f_frozenset_str, frozenset([1, 2]), should_raise=True)
+run_test(
+    "frozenset[int] with str", f_frozenset_int, frozenset(["1", "2"]), should_raise=True
+)
+run_test(
+    "frozenset[int] mixed", f_frozenset_int, frozenset([1, "2"]), should_raise=True
+)
+run_test(
+    "frozenset[str] with int", f_frozenset_str, frozenset([1, 2]), should_raise=True
+)
 run_test("list instead of frozenset", f_frozenset_int, [1, 2], should_raise=True)
 run_test("set instead of frozenset", f_frozenset_int, {1, 2}, should_raise=True)
-run_test("nested invalid", f_frozenset_nested, frozenset([(1, "a"), (2, 3)]), should_raise=True)
+run_test(
+    "nested invalid",
+    f_frozenset_nested,
+    frozenset([(1, "a"), (2, 3)]),
+    should_raise=True,
+)
 
 
 # --- EDGE CASES ---
@@ -332,8 +355,10 @@ run_test("frozenset zeros", f_frozenset_int, frozenset([0, 0, 0]))
 
 # --- RETURN VALIDATION ---
 
+
 @strong
 def f_bad_return_frozenset() -> frozenset[int]:
     return frozenset(["a", "b"])
+
 
 run_test("invalid return frozenset[int]", f_bad_return_frozenset, should_raise=True)

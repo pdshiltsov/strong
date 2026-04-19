@@ -1,12 +1,13 @@
+from functools import lru_cache
 from typing import get_args, get_origin
 
 from strong.handlers import HANDLERS
-from functools import lru_cache
 
 
 @lru_cache(None)
 def analyze_type(tp):
     return get_origin(tp), get_args(tp)
+
 
 def _type_checker(value, expected):
     origin, args = analyze_type(expected)

@@ -7,6 +7,4 @@ def handler_frozenset(args, value, _type_checker):
 
     (item_type,) = args
 
-    return all(
-        _type_checker(val, item_type) for val in value
-    )
+    return all(_type_checker(val, item_type) for val in value)
