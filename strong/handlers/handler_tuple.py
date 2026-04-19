@@ -1,5 +1,5 @@
 def handler_tuple(args, value, _type_checker):
-    
+
     if len(args) == 2 and args[1] is Ellipsis:
         return all(_type_checker(val, args[0]) for val in value)
 

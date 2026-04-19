@@ -1,5 +1,5 @@
-from typing import Literal, Union
 from types import UnionType
+from typing import Literal, Union
 
 from .handler_dict import handler_dict
 from .handler_list import handler_list
@@ -13,5 +13,5 @@ HANDLERS = {
     tuple: handler_tuple,
     Literal: handler_literal,
     Union: handler_union,
-    UnionType: handler_union
+    UnionType: handler_union,
 }
