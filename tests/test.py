@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Any, Never, NoReturn
 
 import pytest
 
@@ -411,3 +411,177 @@ def test_frozensets():
 
     with pytest.raises(Exception):
         f_bad_return_frozenset()
+
+
+# ============================================================================
+# TESTS FOR Any
+# ============================================================================
+
+@strong
+def accept_any(x: Any) -> Any:
+    return x
+
+
+def test_any_with_int():
+    assert accept_any(123) == 123
+
+
+def test_any_with_str():
+    assert accept_any("hello") == "hello"
+
+
+def test_any_with_list():
+    assert accept_any([1, 2, 3]) == [1, 2, 3]
+
+
+def test_any_with_dict():
+    assert accept_any({"a": 1}) == {"a": 1}
+
+
+def test_any_with_none():
+    assert accept_any(None) is None
+
+
+# ============================================================================
+# TESTS FOR Never (arguments)
+# ============================================================================
+
+@strong
+def accept_never(x: Never):
+    return x
+
+
+def test_never_argument_always_fails_int():
+    with pytest.raises(TypeError):
+        accept_never(123)
+
+
+def test_never_argument_always_fails_none():
+    with pytest.raises(TypeError):
+        accept_never(None)
+
+
+def test_never_argument_always_fails_object():
+    with pytest.raises(TypeError):
+        accept_never(object())
+
+
+# ============================================================================
+# TESTS FOR Never (return)
+# ============================================================================
+
+@strong
+def return_never() -> Never:
+    return 42  # явно неверно
+
+
+def test_never_return_always_fails():
+    with pytest.raises(TypeError):
+        return_never()
+
+
+# ============================================================================
+# MIXED TESTS
+# ============================================================================
+
+@strong
+def any_to_int(x: Any) -> int:
+    return x
+
+
+def test_any_to_int_valid():
+    assert any_to_int(10) == 10
+
+
+def test_any_to_int_invalid():
+    with pytest.raises(TypeError):
+        any_to_int("not int")
+
+
+@strong
+def int_to_any(x: int) -> Any:
+    return x
+
+
+def test_int_to_any_valid():
+    assert int_to_any(5) == 5
+
+
+def test_int_to_any_invalid_argument():
+    with pytest.raises(TypeError):
+        int_to_any("oops")
+
+# ============================================================================
+# TESTS FOR NoReturn (arguments)
+# ============================================================================
+
+@strong
+def accept_noreturn(x: NoReturn):
+    return x
+
+
+def test_noreturn_argument_always_fails_int():
+    with pytest.raises(TypeError):
+        accept_noreturn(123)
+
+
+def test_noreturn_argument_always_fails_none():
+    with pytest.raises(TypeError):
+        accept_noreturn(None)
+
+
+def test_noreturn_argument_always_fails_object():
+    with pytest.raises(TypeError):
+        accept_noreturn(object())
+
+
+# ============================================================================
+# TESTS FOR NoReturn (return)
+# ============================================================================
+
+@strong
+def return_noreturn() -> NoReturn:
+    return 42  # явно неверно
+
+
+def test_noreturn_return_always_fails():
+    with pytest.raises(TypeError):
+        return_noreturn()
+
+
+# ============================================================================
+# VALID NoReturn USAGE (important edge case)
+# ============================================================================
+
+@strong
+def valid_noreturn() -> NoReturn:
+    raise RuntimeError("This function never returns")
+
+
+def test_noreturn_valid_behavior():
+    with pytest.raises(RuntimeError):
+        valid_noreturn()
+
+
+# ============================================================================
+# MIXED TESTS (interaction with Any)
+# ============================================================================
+
+@strong
+def any_to_noreturn(x: Any) -> NoReturn:
+    return x  # всегда ошибка
+
+
+def test_any_to_noreturn_always_fails():
+    with pytest.raises(TypeError):
+        any_to_noreturn(10)
+
+
+@strong
+def noreturn_to_any(x: NoReturn) -> Any:
+    return x
+
+
+def test_noreturn_to_any_always_fails():
+    with pytest.raises(TypeError):
+        noreturn_to_any(10)

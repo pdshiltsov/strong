@@ -1,6 +1,6 @@
-# ⚡ strongpy
+# ⚡ Strongpy
 
-A lightweight runtime type checker for Python functions.
+A simple runtime type checker for Python functions.
 
 It validates function arguments and return values using type annotations.
 
@@ -75,7 +75,6 @@ Strong is designed to be:
 
 - simple
 - explicit
-- lightweight
 - predictable
 
 No magic, no runtime inference — only annotations.
@@ -84,7 +83,7 @@ No magic, no runtime inference — only annotations.
 
 # 🐍 Requirements
 
-Python 3.10+
+Python 3.13+
 
 ---
 
