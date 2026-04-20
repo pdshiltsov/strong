@@ -39,24 +39,20 @@ uv add strongpy
 # 🧪 Usage
 
 ```python
-from strongpy import strong
+>>> from strongpy import strong
 
-@strong
-def add(x: int, y: int) -> int:
-    return x + y
+>>> @strong
+... def add(x: int, y: int) -> int:
+...     return x + y
 
-print(add(1, 2))  
-print(add("1", 2))
+>>> add(1, 2)
+3
 
-TypeError: argument 'x' expected int, got str 
-```
-
----
-
-# 💥 Example error
-
-```text
-add argument 'x' expected int, got str
+>>> add("1", 2)
+Traceback (most recent call last):
+  File "example.py", line 10, in <module>
+    add("1", 2)
+TypeError: argument 'x' expected int, got str
 ```
 
 ---

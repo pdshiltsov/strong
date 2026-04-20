@@ -1,6 +1,5 @@
 from functools import lru_cache
-from typing import get_args, get_origin
-from typing import Any, Never, NoReturn
+from typing import Any, Never, NoReturn, get_args, get_origin
 
 from strongpy.handlers import HANDLERS
 
@@ -15,10 +14,10 @@ def _type_checker(value, expected):
 
     if expected is Any:
         return True
-    
+
     if expected is Never:
         return False
-    
+
     if expected is NoReturn:
         return False
 

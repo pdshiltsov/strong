@@ -1,4 +1,4 @@
-from typing import Literal, Any, Never, NoReturn
+from typing import Any, Literal, Never, NoReturn
 
 import pytest
 
@@ -417,6 +417,7 @@ def test_frozensets():
 # TESTS FOR Any
 # ============================================================================
 
+
 @strong
 def accept_any(x: Any) -> Any:
     return x
@@ -446,6 +447,7 @@ def test_any_with_none():
 # TESTS FOR Never (arguments)
 # ============================================================================
 
+
 @strong
 def accept_never(x: Never):
     return x
@@ -470,6 +472,7 @@ def test_never_argument_always_fails_object():
 # TESTS FOR Never (return)
 # ============================================================================
 
+
 @strong
 def return_never() -> Never:
     return 42  # явно неверно
@@ -483,6 +486,7 @@ def test_never_return_always_fails():
 # ============================================================================
 # MIXED TESTS
 # ============================================================================
+
 
 @strong
 def any_to_int(x: Any) -> int:
@@ -511,9 +515,11 @@ def test_int_to_any_invalid_argument():
     with pytest.raises(TypeError):
         int_to_any("oops")
 
+
 # ============================================================================
 # TESTS FOR NoReturn (arguments)
 # ============================================================================
+
 
 @strong
 def accept_noreturn(x: NoReturn):
@@ -539,6 +545,7 @@ def test_noreturn_argument_always_fails_object():
 # TESTS FOR NoReturn (return)
 # ============================================================================
 
+
 @strong
 def return_noreturn() -> NoReturn:
     return 42  # явно неверно
@@ -553,6 +560,7 @@ def test_noreturn_return_always_fails():
 # VALID NoReturn USAGE (important edge case)
 # ============================================================================
 
+
 @strong
 def valid_noreturn() -> NoReturn:
     raise RuntimeError("This function never returns")
@@ -566,6 +574,7 @@ def test_noreturn_valid_behavior():
 # ============================================================================
 # MIXED TESTS (interaction with Any)
 # ============================================================================
+
 
 @strong
 def any_to_noreturn(x: Any) -> NoReturn:
