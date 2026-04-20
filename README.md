@@ -2,6 +2,7 @@
 
 ![Version](https://img.shields.io/pypi/v/strongpy)
 ![License](https://img.shields.io/pypi/l/strongpy)
+![Downloads](https://img.shields.io/pypi/dm/strongpy)
 
 A simple runtime type checker for Python functions.
 
