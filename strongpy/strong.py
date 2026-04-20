@@ -7,6 +7,7 @@ from strongpy.type_checker import _type_checker
 def _name(tp):
     return getattr(tp, "__name__", str(tp))
 
+
 def strong(func):
     """
     Runtime type checking decorator.
@@ -18,7 +19,7 @@ def strong(func):
         def add(x: int, y: int) -> int:
             return x + y
     """
-    
+
     sig = inspect.signature(func)
     return_type = sig.return_annotation
     func_name = func.__name__

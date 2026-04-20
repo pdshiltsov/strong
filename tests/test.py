@@ -1,11 +1,13 @@
-import pytest
 from typing import Literal
-from strongpy import strong
 
+import pytest
+
+from strongpy import strong
 
 # ============================================================================
 # FUNCTIONS UNDER TEST
 # ============================================================================
+
 
 @strong
 def add(a: int, b: int) -> int:
@@ -116,6 +118,7 @@ def s1(a: list[int | str], b: dict[str, tuple[int, str]], c: tuple[int, ...]) ->
 # BASIC TESTS
 # ============================================================================
 
+
 def test_add():
     assert add(1, 2) == 3
 
@@ -132,10 +135,14 @@ def test_bad_return():
 # LIST / DICT / MIX
 # ============================================================================
 
-@pytest.mark.parametrize("xs, should_fail", [
-    ([1, 2, 3], False),
-    ([1, "2", 3], True),
-])
+
+@pytest.mark.parametrize(
+    "xs, should_fail",
+    [
+        ([1, 2, 3], False),
+        ([1, "2", 3], True),
+    ],
+)
 def test_sum_list(xs, should_fail):
     if should_fail:
         with pytest.raises(Exception):
@@ -165,6 +172,7 @@ def test_mix():
 # EDGE CASES
 # ============================================================================
 
+
 def test_empty_and_misc():
     assert empty_list([]) == 0
     assert f8(True) == 1  # bool is int in Python
@@ -173,6 +181,7 @@ def test_empty_and_misc():
 # ============================================================================
 # NESTED STRUCTURES
 # ============================================================================
+
 
 def test_nested():
     assert f5([[1, 2], [3]]) == 6
@@ -190,11 +199,15 @@ def test_nested():
 # INVALID INPUT TYPES
 # ============================================================================
 
-@pytest.mark.parametrize("value", [
-    None,
-    "123",
-    (1, 2, 3),
-])
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        None,
+        "123",
+        (1, 2, 3),
+    ],
+)
 def test_invalid_list_inputs(value):
     with pytest.raises(Exception):
         f7(value)
@@ -203,6 +216,7 @@ def test_invalid_list_inputs(value):
 # ============================================================================
 # UNION TYPES
 # ============================================================================
+
 
 def test_unions():
     assert u1(10) == "10"
@@ -226,6 +240,7 @@ def test_unions():
 # LITERALS
 # ============================================================================
 
+
 def test_literals():
     assert l1("GET") == "GET"
     assert l1("POST") == "POST"
@@ -242,6 +257,7 @@ def test_literals():
 # ============================================================================
 # TUPLES
 # ============================================================================
+
 
 def test_tuples():
     assert t1((1, "a", "b")) == "a"
@@ -274,6 +290,7 @@ def test_tuples():
 # STRESS CASE
 # ============================================================================
 
+
 def test_stress():
     assert s1([1, "x", 3], {"a": (1, "b")}, (1, 2, 3)) == 7
 
@@ -288,21 +305,26 @@ def test_stress():
 # SETS
 # ============================================================================
 
+
 @strong
 def f_set_int(x: set[int]) -> int:
     return sum(x)
+
 
 @strong
 def f_set_str(x: set[str]) -> str:
     return ",".join(sorted(x))
 
+
 @strong
 def f_set_any(x: set):
     return x
 
+
 @strong
 def f_set_nested(x: set[tuple[int, str]]):
     return x
+
 
 @strong
 def f_bad_return_set() -> set[int]:
@@ -339,21 +361,26 @@ def test_sets():
 # FROZENSET
 # ============================================================================
 
+
 @strong
 def f_frozenset_int(x: frozenset[int]) -> int:
     return sum(x)
+
 
 @strong
 def f_frozenset_str(x: frozenset[str]) -> str:
     return ",".join(sorted(x))
 
+
 @strong
 def f_frozenset_any(x: frozenset):
     return x
 
+
 @strong
 def f_frozenset_nested(x: frozenset[tuple[int, str]]):
     return x
+
 
 @strong
 def f_bad_return_frozenset() -> frozenset[int]:
