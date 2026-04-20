@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import get_args, get_origin
 
-from strong.handlers import HANDLERS
+from strongpy.handlers import HANDLERS
 
 
 @lru_cache(None)

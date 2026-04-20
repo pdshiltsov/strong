@@ -1,7 +1,7 @@
 import inspect
 from functools import wraps
 
-from strong.type_checker import _type_checker
+from strongpy.type_checker import _type_checker
 
 
 def _name(tp):
