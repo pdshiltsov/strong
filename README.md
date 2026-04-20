@@ -1,10 +1,9 @@
 # ⚡ Strongpy
+> A simple runtime type checker for Python functions.
 
 ![Version](https://img.shields.io/pypi/v/strongpy)
 ![License](https://img.shields.io/pypi/l/strongpy)
 ![Downloads](https://img.shields.io/pypi/dm/strongpy)
-
-A simple runtime type checker for Python functions.
 
 It validates function arguments and return values using type annotations.
 
@@ -46,8 +45,10 @@ from strongpy import strong
 def add(x: int, y: int) -> int:
     return x + y
 
-print(add(1, 2))   # OK
-print(add("1", 2)) # TypeError
+print(add(1, 2))  
+print(add("1", 2))
+
+TypeError: argument 'x' expected int, got str 
 ```
 
 ---
@@ -70,6 +71,9 @@ add argument 'x' expected int, got str
 - `frozenset[T]`
 - `Union` (`int | str`)
 - `Literal`
+- `Any`
+- `Never`
+- `NoReturn
 
 ---
 
@@ -87,7 +91,7 @@ No magic, no runtime inference — only annotations.
 
 # 🐍 Requirements
 
-Python 3.13+
+- Python ≥ 3.13
 
 ---
 
