@@ -69,7 +69,7 @@ TypeError: argument 'x' expected int, got str
 - `Literal`
 - `Any`
 - `Never`
-- `NoReturn
+- `NoReturn`
 
 ---
 
