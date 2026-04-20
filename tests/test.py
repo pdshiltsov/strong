@@ -1,6 +1,6 @@
 import pytest
 from typing import Literal
-from strong import strong
+from strongpy import strong
 
 
 # ============================================================================
