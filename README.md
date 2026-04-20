@@ -1,5 +1,8 @@
 # ⚡ Strongpy
 
+![Version](https://img.shields.io/pypi/v/strongpy)
+![License](https://img.shields.io/pypi/l/strongpy)
+
 A simple runtime type checker for Python functions.
 
 It validates function arguments and return values using type annotations.
