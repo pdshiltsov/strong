@@ -1,5 +1,6 @@
-from strong import _type_checker
 from copy import deepcopy
+
+from strong import _type_checker
 
 
 class StrongDict:
@@ -12,11 +13,11 @@ class StrongDict:
                 for key, value in obj.items():
                     if not _type_checker(key, self.annotation[0]):
                         raise TypeError(f"{self.name} - incorrect type for key, "
-                                        f"got {type(key)}, expected {self.annotation[0]}")
+                                    f"got {type(key)}, expected {self.annotation[0]}")
                     
                     if not _type_checker(key, self.annotation[1]):
                         raise TypeError(f"{self.name} - incorrect type for value"
-                                        f"got {type(value)}, expected {self.annotation[1]}")
+                                    f"got {type(value)}, expected {self.annotation[1]}")
                     
                     self.__data[deepcopy(key)] = deepcopy(value)
 
