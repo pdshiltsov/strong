@@ -1,2 +1,2 @@
-from .strong_list import StrongList
-from .strong_dict import StrongDict
+from .strong_dict import _StrongDict
+from .strong_list import _StrongList

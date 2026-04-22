@@ -1,9 +1,10 @@
 from copy import deepcopy
 
-from strong import _type_checker
 
+class _StrongDict:
+    def __init__(self, _type_checker):
+        self._type_checker = _type_checker
 
-class StrongDict:
     def __class_getitem__(self, annotation):
         class TypedStrongDict:
             def __init__(self, obj):

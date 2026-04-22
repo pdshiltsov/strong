@@ -1,20 +1,10 @@
 from copy import deepcopy
 
-from strongpy.type_checker import _type_checker
 
+class _StrongList:
+    def __init__(self, _type_checker):
+        self._type_checker = _type_checker
 
-class StrongList:
-    ''' def __init__(self, annotation, obj):
-        self.annotation = annotation
-        self.__data = []
-
-        for item in deepcopy(obj):
-            if _type_checker(obj, annotation):
-                self.__data.append(obj)
-            else:
-                raise TypeError(f"{self.__name__}"
-                    f"only accepts {self.annotation}, not {type(item)}") 
-    '''
     def __class_getitem__(cls, annotation):
         class TypedStrongList(cls):
             def __init__(self, obj):
